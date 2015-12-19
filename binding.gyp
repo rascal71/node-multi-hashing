@@ -50,12 +50,13 @@
                 "crypto/hash.c",
                 "crypto/aesb.c",
                 "crypto/wild_keccak.cpp",
+                "primesr.cpp",
             ],
             "include_dirs": [
-                "crypto",
+                "crypto", "ssl",
             ],
             "cflags_cc": [
-                "-std=c++0x"
+                "-std=c++0x", "-fexceptions",
             ],
         }
     ]

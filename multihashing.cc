@@ -26,6 +26,7 @@ extern "C" {
 }
 
 #include "boolberry.h"
+#include "primesr.h"
 
 using namespace node;
 using namespace v8;
@@ -574,6 +575,26 @@ Handle<Value> fresh(const Arguments& args) {
     return scope.Close(buff->handle_);
 }
 
+Handle<Value> primesr(const Arguments& args) {
+    HandleScope scope;
+
+    if (args.Length() < 1)
+        return except("You must provide one argument.");
+
+    Local<Object> target = args[0]->ToObject();
+
+    if(!Buffer::HasInstance(target))
+        return except("Argument should be a buffer object.");
+
+    char * input = Buffer::Data(target);
+
+    uint32_t input_len = Buffer::Length(target);
+
+    int primes = PrimesDifficulty(input, input_len);
+
+    return scope.Close(Integer::New(primes));
+}
+
 void init(Handle<Object> exports) {
     exports->Set(String::NewSymbol("quark"), FunctionTemplate::New(quark)->GetFunction());
     exports->Set(String::NewSymbol("x11"), FunctionTemplate::New(x11)->GetFunction());
@@ -597,6 +618,7 @@ void init(Handle<Object> exports) {
     exports->Set(String::NewSymbol("sha1"), FunctionTemplate::New(sha1)->GetFunction());
     exports->Set(String::NewSymbol("x15"), FunctionTemplate::New(x15)->GetFunction());
     exports->Set(String::NewSymbol("fresh"), FunctionTemplate::New(fresh)->GetFunction());
+    exports->Set(String::NewSymbol("primesr"), FunctionTemplate::New(primesr)->GetFunction());
 }
 
 NODE_MODULE(multihashing, init)
